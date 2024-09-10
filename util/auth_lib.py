@@ -2,7 +2,11 @@ import base64
 from hashlib import sha256
 
 def hash(password: str, salt: str):
-	return sha256("{}:{}".format(password, salt))
+	m = sha256()
+	m.update("{}:{}".format(password, salt).encode())
+	
+	return m.hexdigest()
+	
 
 def gen_token(username: str, hashed_password: str):
 	raw = ("{}:{}".format(username, hashed_password)).encode("utf-8")

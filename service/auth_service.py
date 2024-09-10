@@ -8,11 +8,11 @@ class AuthData:
 	username: str
 	password: str
 	salt: str
-
-class Register:
-	name: str
-	username: str
-	password: str
+	def __init__(self, name: str, username: str, password: str, salt: str):
+		self.name = name
+		self.username = username
+		self.password = password
+		self.salt = salt
 
 class Credential(BaseModel):
 	username: str
@@ -22,9 +22,28 @@ class AuthService:
 	def __init__(self):
 		self._conn = psycopg2.connect(conn_param)
 
+	def create(self, data: AuthData):
+		cur = self._conn.cursor()
+
+		try:
+			if data.username == "" or data.password == "":
+				raise ValueError("username or password must not be null")
+
+			cur.execute(
+				"insert into account (name, username, password, salt) values (%s, %s, %s, %s)",
+				(data.name, data.username, data.password, data.salt)
+			)
+
+			self._conn.commit()
+		except:
+			self._conn.rollback()
+			raise RuntimeError("create account failed")
+		finally:
+			cur.close()
+			self._conn.close()
+
 	def read(self, username: str):
 		cur = self._conn.cursor()
-		
 		cur.execute("select * from account where username = %s;", (username))
 		data = cur.fetchone()
 		if data == None:

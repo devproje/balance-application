@@ -6,4 +6,6 @@ __pycache__/
 .env
 !.env.example
 
+load.txt
+
 .DS_Store
