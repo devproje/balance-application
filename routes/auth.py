@@ -5,4 +5,5 @@ router = APIRouter()
 
 @router.post("/auth/login")
 def login(auth: Credential):
+
 	return {"ok": 1, "token": "Basic {}"}

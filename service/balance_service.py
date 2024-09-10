@@ -6,12 +6,14 @@ class Balance(BaseModel):
 	name: str
 	date: int
 	price: int
+	buy: bool = True
 	memo: str = ""
 
 class UpdateForm(BaseModel):
 	name: str = ""
 	date: int = 0
 	price: int = 0
+	buy: bool = True
 	memo: str = ""
 
 class BalanceService:
@@ -23,8 +25,8 @@ class BalanceService:
 		cur = self._conn.cursor()
 		try:
 			cur.execute(
-				"insert into balset(name, date, price, memo) values (%s, %s, %s, %s);",
-				(balance.name, balance.date, balance.price, balance.memo)
+				"insert into balset(name, date, price, buy, memo) values (%s, %s, %s, %s, %s);",
+				(balance.name, balance.date, balance.price, balance.buy, balance.memo)
 			)
 
 			self._conn.commit()
@@ -44,7 +46,7 @@ class BalanceService:
 		data = cur.fetchone()
 		
 		if data == None:
-			raise RuntimeError("data not found")
+			return None
 		
 		cur.close()
 		self._conn.close()
@@ -54,7 +56,8 @@ class BalanceService:
 			"name": data[1],
 			"date": data[2],
 			"price": data[3],
-			"memo": data[4]
+			"buy": data[4],
+			"memo": data[5]
 		}
 	
 	def update(self, id: int, act: str, balance: UpdateForm):

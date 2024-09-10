@@ -19,6 +19,7 @@ def insert(balance: Balance, resp: Response):
 	return {
 		"ok": 1,
 		"name": balance.name,
+		"is_buy": balance.buy,
 		"respond_time": "{}ms".format(round((datetime.now().microsecond / 1000) - started))
 	}
 
@@ -26,10 +27,9 @@ def insert(balance: Balance, resp: Response):
 def query(id, resp: Response):
 	started = datetime.now().microsecond / 1000
 	service = BalanceService()
-
-	try:
-		data = service.read(int(id))
-	except:
+	data = service.read(int(id))
+	
+	if data == None:
 		resp.status_code = 204
 		return {"ok": 0, "errno": "id '{}' result is not found".format(id)}
 
@@ -43,7 +43,7 @@ def query(id, resp: Response):
 @router.patch("/balance/{action}/{id}")
 def update(action, id, balance: UpdateForm, resp: Response):
 	service = BalanceService()
-	if action != "name" and action != "date" and action != "price" and action != "memo":
+	if action != "name" and action != "date" and action != "price" and action != "buy" and action != "memo":
 		print(action)
 		print(id)
 		resp.status_code = 400
@@ -71,10 +71,12 @@ def update(action, id, balance: UpdateForm, resp: Response):
 
 	ok = service.update(
 		int(id),
-		action, {
+		action,
+		{
 			"name": balance.name,
 			"date": balance.date,
 			"price": balance.price,
+			"buy": balance.buy,
 			"memo": balance.memo
 		}
 	)
