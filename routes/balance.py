@@ -5,14 +5,20 @@ from service.balance_service import Balance, BalanceService, UpdateForm
 router = APIRouter()
 
 @router.post("/balance", status_code=201)
-def insert(balance: Balance):
+def insert(balance: Balance, resp: Response):
 	started = datetime.now().microsecond / 1000
 	service = BalanceService()
-	name = service.create(balance=balance)
+	ok = service.create(balance=balance)
+	if not ok == 1:
+		resp.status_code = 500
+		return {
+			"ok": 0,
+			"errno": "error occurred to running transaction"
+		}
 
 	return {
 		"ok": 1,
-		"name": name,
+		"name": balance.name,
 		"respond_time": "{}ms".format(round((datetime.now().microsecond / 1000) - started))
 	}
 
@@ -63,7 +69,7 @@ def update(action, id, balance: UpdateForm, resp: Response):
 			"errno": "memo value size is too long: (maximum size: 300 bytes, your size: {} bytes)".format(len(balance.memo))
 		}
 
-	service.update(
+	ok = service.update(
 		int(id),
 		action, {
 			"name": balance.name,
@@ -73,6 +79,13 @@ def update(action, id, balance: UpdateForm, resp: Response):
 		}
 	)
 
+	if not ok == 1:
+		resp.status_code = 500
+		return {
+			"ok": 0,
+			"errno": "error occurred to running transaction"
+		}
+
 	return {
 		"ok": 1,
 		"id": int(id),
@@ -80,10 +93,16 @@ def update(action, id, balance: UpdateForm, resp: Response):
 	}
 
 @router.delete("/balance/{id}")
-def delete(id):
+def delete(id, resp: Response):
 	started = datetime.now().microsecond / 1000
 	service = BalanceService()
-	service.delete(int(id))
+	ok = service.delete(int(id))
+	if not ok == 1:
+		resp.status_code = 500
+		return {
+			"ok": 0,
+			"errno": "error occurred to running transaction"
+		}
 
 	return {
 		"ok": 1,

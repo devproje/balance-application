@@ -18,19 +18,24 @@ class BalanceService:
 	def __init__(self):
 		self._conn = psycopg2.connect(conn_param)
 
-	def create(self, balance: Balance) -> str:
+	def create(self, balance: Balance):
+		ok = True
 		cur = self._conn.cursor()
-		cur.execute(
-			"insert into balset(name, date, price, memo) values (%s, %s, %s, %s);",
-			(balance.name, balance.date, balance.price, balance.memo)
-		)
+		try:
+			cur.execute(
+				"insert into balset(name, date, price, memo) values (%s, %s, %s, %s);",
+				(balance.name, balance.date, balance.price, balance.memo)
+			)
 
-		self._conn.commit()
-		
-		cur.close()
-		self._conn.close()
+			self._conn.commit()
+		except:
+			self._conn.rollback()
+			ok = False
+		finally:
+			cur.close()
+			self._conn.close()
 
-		return balance.name
+		return ok
 	
 	def read(self, id: int):
 		cur = self._conn.cursor()
@@ -53,19 +58,31 @@ class BalanceService:
 		}
 	
 	def update(self, id: int, act: str, balance: UpdateForm):
+		ok = True
 		cur = self._conn.cursor()
-		cur.execute(f"update balset set {act} = %s where id = %s;", (balance[act], id))
+		try:
+			cur.execute(f"update balset set {act} = %s where id = %s;", (balance[act], id))
+			self._conn.commit()
+		except:
+			self._conn.rollback()
+			ok = False
+		finally:
+			cur.close()
+			self._conn.close()
 
-		self._conn.commit()
-
-		cur.close()
-		self._conn.close()
+		return ok
 	
 	def delete(self, id: int):
+		ok = True
 		cur = self._conn.cursor()
-		cur.execute("delete from balset where id = %s;", (id))
-
-		self._conn.commit()
-
-		cur.close()
-		self._conn.close()
+		try:
+			cur.execute("delete from balset where id = %s;", (id))
+			self._conn.commit()
+		except:
+			self._conn.rollback()
+			ok = False
+		finally:
+			cur.close()
+			self._conn.close()
+		
+		return ok
