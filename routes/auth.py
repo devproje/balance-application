@@ -10,7 +10,7 @@ def login(auth: Credential, resp: Response):
 	data = service.read(auth.username)
 
 	hashed = hash(auth.password, data.salt)
-	if not data.username == auth.username and not data.password == hashed:
+	if data.username != auth.username or data.password != hashed:
 		resp.status_code = 401
 		return {
 			"ok": 0,
