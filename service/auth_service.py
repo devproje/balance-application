@@ -44,7 +44,7 @@ class AuthService:
 
 	def read(self, username: str):
 		cur = self._conn.cursor()
-		cur.execute("select * from account where username = %s;", (username))
+		cur.execute("select * from account where username = %s;", (username, ))
 		data = cur.fetchone()
 		if data == None:
 			return None
@@ -58,16 +58,32 @@ class AuthService:
 			password = data[2],
 			salt = data[3]
 		)
-
-	def check_auth(self, req: Request) -> bool:
+	
+	def get_data(self, req: Request):
 		raw = req.headers.get("Authorization")
+		if raw == None:
+			return None
+
 		raw_token = raw.removeprefix("Basic ").encode("ascii")
 
 		token = base64.b64decode(raw_token)
 		data = token.decode("utf-8").split(":")
+		
+		return {
+			"username": data[0],
+			"password": data[1]
+		}
 
-		acc = self.read(data[0])
-		if acc.username == data[0] and acc.password == data[1]:
+	def check_auth(self, req: Request) -> bool:
+		data = self.get_data(req)
+		if data == None:
+			return False
+
+		acc = self.read(data["username"])
+		if acc == None:
+			return False
+
+		if acc.username == data["username"] and acc.password == data["password"]:
 			return True
 		
 		return False

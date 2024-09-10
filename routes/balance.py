@@ -1,14 +1,26 @@
 from datetime import datetime
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, Request
+from service.auth_service import AuthService
 from service.balance_service import Balance, BalanceService, UpdateForm
 
 router = APIRouter()
 
 @router.post("/balance", status_code=201)
-def insert(balance: Balance, resp: Response):
+def insert(balance: Balance, req: Request, resp: Response):
 	started = datetime.now().microsecond / 1000
+	auth = AuthService()
+
+	if not auth.check_auth(req):
+		resp.status_code = 403
+		return {
+			"ok": 0,
+			"errno": "permission denied"
+		}
+	
+	info = auth.get_data(req)
+
 	service = BalanceService()
-	ok = service.create(balance=balance)
+	ok = service.create(info["username"], balance=balance)
 	if not ok == 1:
 		resp.status_code = 500
 		return {
@@ -23,9 +35,44 @@ def insert(balance: Balance, resp: Response):
 		"respond_time": "{}ms".format(round((datetime.now().microsecond / 1000) - started))
 	}
 
-@router.get("/balance/{id}")
-def query(id, resp: Response):
+@router.get("/balance")
+def query(req: Request, resp: Response):
 	started = datetime.now().microsecond / 1000
+	auth = AuthService()
+	if not auth.check_auth(req):
+		resp.status_code = 403
+		return {
+			"ok": 0,
+			"errno": "permission denied"
+		}
+	
+	service = BalanceService()
+	data = service.query()
+	if data == None:
+		resp.status_code = 204
+		return {
+			"ok": 0,
+			"errno": "no content"
+		}
+	
+	return {
+		"ok": 1,
+		"data": data,
+		"respond_time": "{}ms".format(round((datetime.now().microsecond / 1000) - started))
+	}
+
+@router.get("/balance/{id}")
+def find(id, req: Request, resp: Response):
+	started = datetime.now().microsecond / 1000
+	auth = AuthService()
+
+	if not auth.check_auth(req):
+		resp.status_code = 403
+		return {
+			"ok": 0,
+			"errno": "permission denied"
+		}
+
 	service = BalanceService()
 	data = service.read(int(id))
 	
@@ -41,7 +88,18 @@ def query(id, resp: Response):
 	}
 
 @router.patch("/balance/{action}/{id}")
-def update(action, id, balance: UpdateForm, resp: Response):
+def update(action, id, balance: UpdateForm, req: Request, resp: Response):
+	started = datetime.now().microsecond / 1000
+	auth = AuthService()
+
+	print(auth.check_auth(req))
+	if not auth.check_auth(req):
+		resp.status_code = 403
+		return {
+			"ok": 0,
+			"errno": "permission denied"
+		}
+	
 	service = BalanceService()
 	if action != "name" and action != "date" and action != "price" and action != "buy" and action != "memo":
 		print(action)
@@ -91,12 +149,22 @@ def update(action, id, balance: UpdateForm, resp: Response):
 	return {
 		"ok": 1,
 		"id": int(id),
-		"action": action
+		"action": action,
+		"respond_time": "{}ms".format(round((datetime.now().microsecond / 1000) - started))
 	}
 
 @router.delete("/balance/{id}")
-def delete(id, resp: Response):
+def delete(id, req: Request, resp: Response):
 	started = datetime.now().microsecond / 1000
+	auth = AuthService()
+
+	if not auth.check_auth(req):
+		resp.status_code = 403
+		return {
+			"ok": 0,
+			"errno": "permission denied"
+		}
+
 	service = BalanceService()
 	ok = service.delete(int(id))
 	if not ok == 1:

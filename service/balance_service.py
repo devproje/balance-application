@@ -20,13 +20,13 @@ class BalanceService:
 	def __init__(self):
 		self._conn = psycopg2.connect(conn_param)
 
-	def create(self, balance: Balance):
+	def create(self, username: str, balance: Balance):
 		ok = True
 		cur = self._conn.cursor()
 		try:
 			cur.execute(
-				"insert into balset(name, date, price, buy, memo) values (%s, %s, %s, %s, %s);",
-				(balance.name, balance.date, balance.price, balance.buy, balance.memo)
+				"insert into balset(name, uid, date, price, buy, memo) values (%s, %s, %s, %s, %s, %s);",
+				(balance.name, username, balance.date, balance.price, balance.buy, balance.memo)
 			)
 
 			self._conn.commit()
@@ -38,6 +38,28 @@ class BalanceService:
 			self._conn.close()
 
 		return ok
+	
+	def query(self):
+		cur = self._conn.cursor()
+		cur.execute("select * from balset;")
+
+		raw = cur.fetchall()
+		data = []
+
+		if len(raw) == 0:
+			return None
+
+		for d in raw:
+			data.append({
+				"id": d[0],
+				"name": d[1],
+				"date": d[2],
+				"price": d[3],
+				"buy": d[4],
+				"memo": d[5]
+			})
+
+		return data
 	
 	def read(self, id: int):
 		cur = self._conn.cursor()

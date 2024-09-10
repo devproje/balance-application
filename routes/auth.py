@@ -1,9 +1,24 @@
-from fastapi import APIRouter
-from service.auth_service import Credential
+from fastapi import APIRouter, Response
+from util.auth_lib import hash, gen_token
+from service.auth_service import Credential, AuthService
 
 router = APIRouter()
 
 @router.post("/auth/login")
-def login(auth: Credential):
+def login(auth: Credential, resp: Response):
+	service = AuthService()
+	data = service.read(auth.username)
 
-	return {"ok": 1, "token": "Basic {}"}
+	hashed = hash(auth.password, data.salt)
+	if not data.username == auth.username and not data.password == hashed:
+		resp.status_code = 401
+		return {
+			"ok": 0,
+			"errno": "Unauthorized"
+		}
+	
+	token = gen_token(auth.username, hashed)
+	return {
+		"ok": 1,
+		"token": "Basic {}".format(token)
+	}
