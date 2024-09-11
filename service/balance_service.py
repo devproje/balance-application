@@ -41,7 +41,7 @@ class BalanceService:
 	
 	def query(self):
 		cur = self._conn.cursor()
-		cur.execute("select * from balset;")
+		cur.execute("select id, name, date, price, buy, memo from balset;")
 
 		raw = cur.fetchall()
 		data = []
@@ -63,7 +63,7 @@ class BalanceService:
 	
 	def read(self, id: int):
 		cur = self._conn.cursor()
-		cur.execute("select * from balset where id = %s;", (id))
+		cur.execute("select id, name, date, price, buy, memo from balset where id = %s;", (id))
 
 		data = cur.fetchone()
 		

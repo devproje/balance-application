@@ -8,6 +8,12 @@ router = APIRouter()
 def login(auth: Credential, resp: Response):
 	service = AuthService()
 	data = service.read(auth.username)
+	if data == None:
+		resp.status_code = 401
+		return {
+			"ok": 0,
+			"errno": "Unauthorized"
+		}
 
 	hashed = hash(auth.password, data.salt)
 	if data.username != auth.username or data.password != hashed:
