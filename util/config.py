@@ -3,6 +3,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def _load_secret():
+	try:
+		tok = open("./secret_token.txt", "r").read()
+	except:
+		return ""
+	
+	return tok
+
 conn_param = "host=%s port=%s dbname=%s user=%s password=%s" % (
 	os.getenv("DB_URL"),
 	os.getenv("DB_PORT"),
@@ -10,3 +18,5 @@ conn_param = "host=%s port=%s dbname=%s user=%s password=%s" % (
 	os.getenv("DB_USERNAME"),
 	os.getenv("DB_PASSWORD")
 )
+
+secret = _load_secret()
