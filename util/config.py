@@ -11,6 +11,9 @@ def _load_secret():
 	
 	return tok
 
+def db_url():
+	return os.getenv("DB_URL")
+
 conn_param = "host=%s port=%s dbname=%s user=%s password=%s" % (
 	os.getenv("DB_URL"),
 	os.getenv("DB_PORT"),
