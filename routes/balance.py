@@ -87,8 +87,8 @@ def find(id, req: Request, resp: Response):
 		"respond_time": "{}ms".format(round((datetime.now().microsecond / 1000) - started))
 	}
 
-@router.patch("/balance/{action}/{id}")
-def update(action, id, balance: UpdateForm, req: Request, resp: Response):
+@router.patch("/balance/{id}")
+def update(id, balance: UpdateForm, req: Request, resp: Response):
 	started = datetime.now().microsecond / 1000
 	auth = AuthService()
 
@@ -101,42 +101,10 @@ def update(action, id, balance: UpdateForm, req: Request, resp: Response):
 		}
 	
 	service = BalanceService()
-	if action != "name" and action != "date" and action != "price" and action != "buy" and action != "memo":
-		print(action)
-		print(id)
-		resp.status_code = 400
-		return {"ok": 0, "errno": "action must be to name, date, price or memo"}
-	
-	if action == "name" and balance.name == "":
-		resp.status_code = 400
-		return {"ok": 0, "action": action, "errno": "name value cannot be empty"}
-	
-	if action == "date" and balance.date <= 0:
-		resp.status_code = 400
-		return {"ok": 0, "action": action, "errno": "date value cannot be 0 or minus"}
-	
-	if action == "price" and balance.price <= 0:
-		resp.status_code = 400
-		return {"ok": 0, "action": action, "errno": "price value cannot be 0 or minus"}
-	
-	if action == "memo" and len(balance.memo) > 300:
-		resp.status_code = 400
-		return {
-			"ok": 0,
-			"action": action,
-			"errno": "memo value size is too long: (maximum size: 300 bytes, your size: {} bytes)".format(len(balance.memo))
-		}
 
 	ok = service.update(
 		int(id),
-		action,
-		{
-			"name": balance.name,
-			"date": balance.date,
-			"price": balance.price,
-			"buy": balance.buy,
-			"memo": balance.memo
-		}
+		UpdateForm(balance.name, balance.date, balance.price, balance.buy, balance.memo)
 	)
 
 	if not ok == 1:
@@ -149,7 +117,6 @@ def update(action, id, balance: UpdateForm, req: Request, resp: Response):
 	return {
 		"ok": 1,
 		"id": int(id),
-		"action": action,
 		"respond_time": "{}ms".format(round((datetime.now().microsecond / 1000) - started))
 	}
 
