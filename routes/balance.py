@@ -87,7 +87,7 @@ def find(id, req: Request, resp: Response):
 		"respond_time": "{}ms".format(round((datetime.now().microsecond / 1000) - started))
 	}
 
-@router.patch("/balance/{id}")
+@router.put("/balance/{id}")
 def update(id, balance: UpdateForm, req: Request, resp: Response):
 	started = datetime.now().microsecond / 1000
 	auth = AuthService()

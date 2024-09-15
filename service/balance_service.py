@@ -86,7 +86,7 @@ class BalanceService:
 		ok = True
 		cur = self._conn.cursor()
 		try:
-			cur.execute(f"update balset set name = %s, date = %s, price = %s, buy = %s, memo = %s where id = %s;", (
+			cur.execute("update balset set name = %s, date = %s, price = %s, buy = %s, memo = %s where id = %s;", (
 				balance.name,
 				balance.date,
 				balance.price,
