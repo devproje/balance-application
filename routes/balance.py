@@ -91,8 +91,6 @@ def find(id, req: Request, resp: Response):
 def update(id, balance: UpdateForm, req: Request, resp: Response):
 	started = datetime.now().microsecond / 1000
 	auth = AuthService()
-
-	print(auth.check_auth(req))
 	if not auth.check_auth(req):
 		resp.status_code = 403
 		return {
@@ -101,11 +99,7 @@ def update(id, balance: UpdateForm, req: Request, resp: Response):
 		}
 	
 	service = BalanceService()
-
-	ok = service.update(
-		int(id),
-		UpdateForm(balance.name, balance.date, balance.price, balance.buy, balance.memo)
-	)
+	ok = service.update(int(id), balance)
 
 	if not ok == 1:
 		resp.status_code = 500
