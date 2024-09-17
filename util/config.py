@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(verbose=True, override=True)
 
 def _load_secret():
 	try:

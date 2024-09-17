@@ -108,7 +108,7 @@ class BalanceService:
 		ok = True
 		cur = self._conn.cursor()
 		try:
-			cur.execute("delete from balset where id = %s;", (id))
+			cur.execute("delete from balset where id = %s;", (str(id)))
 			self._conn.commit()
 		except:
 			self._conn.rollback()
