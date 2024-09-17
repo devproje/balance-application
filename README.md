@@ -49,4 +49,4 @@ fastapi run app.py --port 3000
 ```
 
 ## License
-본 프로젝트는 (MIT License)[https://github.com/devproje/balance-application/blob/master/LICENSE]를 따릅니다.
+본 프로젝트는 [MIT License](https://github.com/devproje/balance-application/blob/master/LICENSE)를 따릅니다.
