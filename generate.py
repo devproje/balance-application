@@ -7,15 +7,6 @@ def gen_salt(length = 20):
 	letters = string.ascii_lowercase + string.digits + string.punctuation
 	return "".join(random.choice(letters) for i in range(length))
 
-def _gen_token():
-	deps = string.ascii_lowercase + string.ascii_uppercase + string.digits + string.punctuation
-	token = "".join(random.choice(deps) for i in range(20))
-
-	sec = open("./secret_token.txt", "w")
-	sec.write(token)
-
-	sec.close()
-
 def _new_account():
 	name = input("input your display name: ")
 	username = input("input your username: ")
@@ -38,7 +29,6 @@ def _new_account():
 	service.create(data=packed)
 
 def on_load(conn, cur):
-	_gen_token()
 	cur.execute(
 		"""
 		create table account(
