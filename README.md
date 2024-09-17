@@ -39,12 +39,7 @@ DB_USERNAME=user
 DB_PASSWORD=sample1234!
 ```
 
-5. generate.py를 실행하여 테이블 및 계정을 생성 해줍니다.
-```bash
-python generate.py
-```
-
-6. fastapi 명령어를 이용하여 서비스를 실행 해줍니다.
+5. fastapi 명령어를 이용하여 서비스를 실행 해줍니다.
 ```bash
 fastapi run app.py
 ```
@@ -52,3 +47,6 @@ fastapi run app.py
 ```bash
 fastapi run app.py --port 3000
 ```
+
+## License
+본 프로젝트는 (MIT License)[https://github.com/devproje/balance-application/blob/master/LICENSE]를 따릅니다.

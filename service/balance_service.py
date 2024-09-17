@@ -82,11 +82,18 @@ class BalanceService:
 			"memo": data[5]
 		}
 	
-	def update(self, id: int, act: str, balance: UpdateForm):
+	def update(self, id: int, balance: UpdateForm):
 		ok = True
 		cur = self._conn.cursor()
 		try:
-			cur.execute(f"update balset set {act} = %s where id = %s;", (balance[act], id))
+			cur.execute("update balset set name = %s, date = %s, price = %s, buy = %s, memo = %s where id = %s;", (
+				balance.name,
+				balance.date,
+				balance.price,
+				balance.buy,
+				balance.memo,
+				id
+			))
 			self._conn.commit()
 		except:
 			self._conn.rollback()
@@ -101,7 +108,7 @@ class BalanceService:
 		ok = True
 		cur = self._conn.cursor()
 		try:
-			cur.execute("delete from balset where id = %s;", (id))
+			cur.execute("delete from balset where id = %s;", (str(id)))
 			self._conn.commit()
 		except:
 			self._conn.rollback()

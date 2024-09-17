@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(verbose=True, override=True)
 
 def _load_secret():
 	try:
@@ -10,6 +10,9 @@ def _load_secret():
 		return ""
 	
 	return tok
+
+def db_url():
+	return os.getenv("DB_URL")
 
 conn_param = "host=%s port=%s dbname=%s user=%s password=%s" % (
 	os.getenv("DB_URL"),
