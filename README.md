@@ -1,5 +1,7 @@
 # Balance Application
 - FastAPI로 제작한 가계부 시스템 입니다. (Backend)
+- 클라이언트
+	- [Balance Client](https://github.com/devproje/balance-client)
 
 ## Requirement
 - Python 3.12
