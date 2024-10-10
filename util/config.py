@@ -23,3 +23,9 @@ conn_param = "host=%s port=%s dbname=%s user=%s password=%s" % (
 )
 
 secret = _load_secret()
+def get_otld():
+	ret = os.getenv("OTLD_SUPPORT")
+	if ret is "1" or ret is "true":
+		return True
+	
+	return False
