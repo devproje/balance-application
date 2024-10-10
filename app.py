@@ -43,11 +43,11 @@ app.include_router(router=balance)
 
 if get_otld():
 	import logging
-	from otlp_tracing import configure_otel_otlp
+	from otlp_tracing import configure_oltp_grpc_tracing
 	from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 	logging.basicConfig(level=logging.INFO)
-	tracer = configure_otel_otlp()
+	tracer = configure_oltp_grpc_tracing()
 	logger = logging.getLogger(__name__)
 
 	FastAPIInstrumentor.instrument_app(app)
