@@ -6,7 +6,7 @@ click==8.1.7
 Deprecated==1.2.14
 dnspython==2.6.1
 email_validator==2.2.0
-fastapi==0.114.0
+fastapi==0.115.2
 fastapi-cli==0.0.5
 googleapis-common-protos==1.65.0
 grpcio==1.66.2
