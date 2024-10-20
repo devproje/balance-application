@@ -3,7 +3,7 @@ from generate import on_load
 from fastapi import FastAPI, Response
 from routes.auth import router as auth
 from contextlib import asynccontextmanager
-from util.config import conn_param, db_url, get_otld
+from util.config import conn_param, db_url
 from routes.balance import router as balance
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -40,14 +40,3 @@ async def index(resp: Response):
 
 app.include_router(router=auth)
 app.include_router(router=balance)
-
-if get_otld():
-	import logging
-	from otlp_tracing import configure_oltp_grpc_tracing
-	from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-
-	logging.basicConfig(level=logging.INFO)
-	tracer = configure_oltp_grpc_tracing()
-	logger = logging.getLogger(__name__)
-
-	FastAPIInstrumentor.instrument_app(app)
