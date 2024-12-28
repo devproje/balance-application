@@ -1,0 +1,12 @@
+{
+	"port": 8080,
+	"signup": false,
+	"salt_size": 10,
+	"db_data": {
+		"host": "localhost",
+		"port": 5432,
+		"db_name": "balance",
+		"username": "user",
+		"password": "pass"
+	}
+}
