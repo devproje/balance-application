@@ -22,24 +22,46 @@ type DatabaseData struct {
 
 func InitConfig() {
 	if _, err := os.ReadFile("config.json"); err != nil {
-		ref := ConfigData{
-			Port:     8080,
-			SaltSize: 10,
-			Database: DatabaseData{
-				Host:     "localhost",
-				Port:     5432,
-				DbName:   "balance",
-				Username: "user",
-				Password: "pass",
-			},
-		}
-		raw, err := json.MarshalIndent(ref, "", "\t")
-		if err != nil {
-			panic("cannot create config.json file")
-		}
-
-		os.WriteFile("config.json", []byte(raw), 0644)
+		raw := createRaw()
+		os.WriteFile("config.json", raw, 0644)
 	}
+}
+
+func CreateSample() error {
+	if _, err := os.ReadFile("config.sample.json"); err != nil {
+		_, err = os.Create("config.sample.json")
+		if err != nil {
+			return err
+		}
+	}
+
+	err := os.WriteFile("config.sample.json", createRaw(), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func createRaw() []byte {
+	ref := ConfigData{
+		Port:     8080,
+		SaltSize: 10,
+		Database: DatabaseData{
+			Host:     "localhost",
+			Port:     5432,
+			DbName:   "balance",
+			Username: "user",
+			Password: "pass",
+		},
+	}
+
+	raw, err := json.MarshalIndent(ref, "", "\t")
+	if err != nil {
+		panic("cannot create config.json file")
+	}
+
+	return raw
 }
 
 func Get() ConfigData {

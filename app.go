@@ -8,16 +8,39 @@ import (
 	"github.com/devproje/balance-application/internal/database"
 	"github.com/devproje/balance-application/internal/middleware"
 	"github.com/devproje/balance-application/internal/routes"
+	"github.com/devproje/plog/level"
+	"github.com/devproje/plog/log"
 	"github.com/gin-gonic/gin"
 )
+
+func check(target string, args []string) bool {
+	for i := 0; i < len(args); i++ {
+		if args[i] == target {
+			return true
+		}
+	}
+
+	return false
+}
 
 func init() {
 	var args = os.Args[1:]
 	gin.SetMode(gin.ReleaseMode)
+	log.SetLevel(level.Info)
 
 	if len(args) > 0 {
-		if args[0] == "-d" || args[0] == "--debug" {
+		if check("-d", args) || check("--debug", args) {
 			gin.SetMode(gin.DebugMode)
+			log.SetLevel(level.Trace)
+		}
+
+		if check("--create-sample", args) || check("-sa", args) {
+			err := config.CreateSample()
+			if err != nil {
+				panic(err)
+			}
+
+			return
 		}
 	}
 }
@@ -55,5 +78,7 @@ func main() {
 	app := gin.Default()
 
 	setup(app)
+	log.Infof("server port bind at: %d", config.Get().Port)
+
 	app.Run(fmt.Sprintf(":%d", config.Get().Port))
 }
