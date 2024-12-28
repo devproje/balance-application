@@ -1,13 +1,5 @@
-.vscode/
-__pycache__/
+bak/
+config.json
+!config.sample.json
 
-.venv/
-
-.env
-!.env.example
-
-secret_token.txt
-
-load.txt
-
-.DS_Store
+balance-application
