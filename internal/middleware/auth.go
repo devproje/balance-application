@@ -10,7 +10,7 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		excludedPaths := []string{"/api/account/login", "/api/account/signup"}
+		excludedPaths := []string{"/", "/api/account/login", "/api/account/signup"}
 		for _, path := range excludedPaths {
 			if strings.HasPrefix(c.Request.URL.Path, path) {
 				c.Next()

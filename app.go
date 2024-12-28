@@ -47,6 +47,10 @@ func init() {
 
 func setup(app *gin.Engine) {
 	app.Use(middleware.AuthMiddleware())
+
+	app.GET("/", func(ctx *gin.Context) {
+		ctx.String(200, "service is healty")
+	})
 	api := app.Group("/api")
 	{
 		auth := api.Group("/account")
