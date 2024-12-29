@@ -29,6 +29,7 @@ git clone https://github.com/devproje/balance-application
 	"port": 8080,
 	"signup": false,
 	"salt_size": 10,
+	"cors_origin": "*",
 	"db_data": {
 		"host": "localhost",
 		"port": 5432,

@@ -46,6 +46,7 @@ func init() {
 }
 
 func setup(app *gin.Engine) {
+	app.Use(middleware.CORS)
 	app.Use(middleware.AuthMiddleware())
 
 	app.GET("/", func(ctx *gin.Context) {

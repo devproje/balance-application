@@ -12,7 +12,6 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	// TODO: add dsn parse to config
 	var err error
 	var cnf = config.Get().Database
 	dsn := fmt.Sprintf(

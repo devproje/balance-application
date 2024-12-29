@@ -6,10 +6,11 @@ import (
 )
 
 type ConfigData struct {
-	Port     int          `json:"port"`
-	SignUp   bool         `json:"signup"`
-	SaltSize int          `json:"salt_size"`
-	Database DatabaseData `json:"db_data"`
+	Port       int          `json:"port"`
+	SignUp     bool         `json:"signup"`
+	SaltSize   int          `json:"salt_size"`
+	CorsOrigin string       `json:"cors_origin"`
+	Database   DatabaseData `json:"db_data"`
 }
 
 type DatabaseData struct {
